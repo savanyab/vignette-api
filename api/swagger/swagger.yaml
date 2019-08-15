@@ -1,57 +1,186 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
-# during dev, should point to your local machine
+  title: Vignettes API
 host: localhost:10010
-# basePath prefixes all resource paths 
 basePath: /
-# 
 schemes:
-  # tip: remove http to make production-grade
   - http
   - https
-# format of bodies a client can send (Content-Type)
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
+securityDefinitions:
+  sessionId:
+    type: apiKey
+    in: header
+    name: sessionId
+security:
+  - sessionId: []
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
-    get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
+  /vehicles:
+    x-swagger-router-controller: vehicles
+    post:
+      description: Saves new vehicle to the app
+      operationId: saveVehicle
       parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+        - name: vehicle
+          in: body
+          required: true
+          description: Vehicle data to save vehicle with
+          schema:
+            $ref: "#/definitions/SaveVehicleRequest"
+      responses:
+        "201":
+          description: Successfully saved vehicle
+          schema: 
+            $ref: "#/definitions/Vehicle"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Delete vehicle
+      operationId: deleteVehicle
+      parameters:
+        - name: _id
+          in: body
+          required: true
+          description: Id of vehicle to delete
+          schema:
+            type: string
+      responses:
+        "200": 
+          description: Deleted vehicle
+          schema:
+            type: object
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /signup:
+    x-swagger-router-controller: auth
+    post:
+      description: Creates new user
+      operationId: signup
+      security: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: User data to create new user with
+          schema:
+            $ref: "#/definitions/Credentials"
+      responses:
+        "201":
+          description: Successfully created user
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: Error, email is already taken
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /login:
+    x-swagger-router-controller: auth
+    post:
+      description: Logs in user
+      operationId: login
+      security: []
+      parameters:
+        - name: credentials
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Credentials"
       responses:
         "200":
-          description: Success
+          description: Successfully logged in user
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
+            type: object
+            required:
+              - sessionID
+            properties:
+              sessionID:
+                type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /logout:
+    x-swagger-router-controller: auth
+    get:
+      description: Logs out user
+      operationId: logout
+      responses:
+        "200":
+          description: Logs out user
+          schema:
+            type: object
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  Credentials:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+  User:
     properties:
-      message:
+      id:
         type: string
+      email:
+        type: string
+  SaveVehicleRequest:
+    required:
+      - vehicleCategory
+      - licencePlate
+    properties:
+      vehicleCategory:
+        description: Category of vehicle
+        type: string
+        enum:
+          - car
+          - motorcycle
+          - bus
+          - truck
+      licencePlate:
+        type: string
+        description: Licence plate number of vehicle
+  Vehicle:
+    required:
+      - _id
+      - vehicleCategory
+      - licencePlate
+    properties:
+      _id:
+        type: string
+      vignetteId:
+        type: string
+        description: Valid vignette id that belongs to the vehicle
+      vehicleCategory:
+        description: Category of vehicle
+        type: string
+        enum:
+          - car
+          - motorcycle
+          - bus
+          - truck
+      licencePlate:
+        type: string
+        description: Licence plate number of vehicle
   ErrorResponse:
     required:
       - message
