@@ -1,10 +1,12 @@
 module.exports = {
-  ResourceTakenError,
+  AlreadyExistError,
   NotFoundError,
-  AuthenticationError
+  AuthenticationError,
+  BadRequestError,
+  UnavailableVignetteError
 }
 
-function ResourceTakenError(message) {
+function AlreadyExistError(message) {
   this.message = message;
 }
 
@@ -13,5 +15,13 @@ function NotFoundError(message) {
 }
 
 function AuthenticationError(message) {
+  this.message = message;
+}
+
+function BadRequestError(message) {
+  this.message = message;
+}
+
+function UnavailableVignetteError(message) {
   this.message = message;
 }

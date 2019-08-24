@@ -19,11 +19,69 @@ securityDefinitions:
 security:
   - sessionId: []
 paths:
+  /my-vignettes:
+    x-swagger-router-controller: vignettes
+    get:
+      description: Show user's valid vignettes
+      tags:
+        - userVignettes
+      operationId: getMyVignettes
+      parameters:
+        - name: vignetteType
+          in: query
+          required: false
+          description: Vignette type that user wants to see
+          type: string
+          enum:
+          - weekly
+          - monthly
+          - yearly
+          - county
+      responses:
+        "200":
+          description: Show user's valid vignettes
+          schema: 
+            $ref: "#/definitions/Vignette"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /purchase:
+    x-swagger-router-controller: vignettes
+    post:
+      description: Purchase vignette for given vehicle
+      tags:
+        - userVignettes
+      operationId: purchase
+      parameters:
+        - name: vignette
+          in: body
+          schema:
+            $ref: "#/definitions/PurchaseRequest"
+      responses:
+        "201":
+          description: Successful vignette purchase
+          schema:
+            $ref: "#/definitions/Vignette"
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: Vehicle not found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /vehicles:
     x-swagger-router-controller: vehicles
     post:
       description: Saves new vehicle to the app
       operationId: saveVehicle
+      tags:
+        - userVehicles
       parameters:
         - name: vehicle
           in: body
@@ -35,21 +93,24 @@ paths:
         "201":
           description: Successfully saved vehicle
           schema: 
-            $ref: "#/definitions/Vehicle"
+            $ref: "#/definitions/NewVehicleResponse"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /vehicles/{vehicleId}:
+    x-swagger-router-controller: vehicles
     delete:
       description: Delete vehicle
+      tags:
+        - userVehicles
       operationId: deleteVehicle
       parameters:
-        - name: _id
-          in: body
+        - name: vehicleId
+          in: path
           required: true
           description: Id of vehicle to delete
-          schema:
-            type: string
+          type: string
       responses:
         "200": 
           description: Deleted vehicle
@@ -64,6 +125,8 @@ paths:
     post:
       description: Creates new user
       operationId: signup
+      tags:
+        - auth
       security: []
       parameters:
         - name: user
@@ -90,6 +153,8 @@ paths:
     post:
       description: Logs in user
       operationId: login
+      tags:
+        - auth
       security: []
       parameters:
         - name: credentials
@@ -116,6 +181,8 @@ paths:
     get:
       description: Logs out user
       operationId: logout
+      tags:
+        - auth
       responses:
         "200":
           description: Logs out user
@@ -143,6 +210,52 @@ definitions:
         type: string
       email:
         type: string
+  Vignette:
+    properties:
+      _id:
+        type: string
+      identifier:
+        type: string
+      validFrom:
+        type: string
+        format: date-time
+      validTo:
+        type: string
+        format: date-time
+      vignetteType:
+        type: string
+        enum:
+          - weekly
+          - monthly
+          - yearly
+          - county
+      vehicleId:
+        type: string
+      userId:
+        type: string
+      licencePlate:
+        type: string
+    required:
+      - identifier
+      - vehicleId
+  PurchaseRequest:
+    properties:
+      validFrom:
+        type: string
+        format: date
+      vignetteType:
+        type: string
+        enum:
+          - weekly
+          - monthly
+          - yearly
+          - county
+      vehicleId:
+        type: string
+    required:
+      - validFrom
+      - vignetteType
+      - vehicleId
   SaveVehicleRequest:
     required:
       - vehicleCategory
@@ -159,25 +272,13 @@ definitions:
       licencePlate:
         type: string
         description: Licence plate number of vehicle
-  Vehicle:
-    required:
-      - _id
-      - vehicleCategory
-      - licencePlate
+  NewVehicleResponse:
     properties:
       _id:
         type: string
-      vignetteId:
-        type: string
-        description: Valid vignette id that belongs to the vehicle
       vehicleCategory:
         description: Category of vehicle
         type: string
-        enum:
-          - car
-          - motorcycle
-          - bus
-          - truck
       licencePlate:
         type: string
         description: Licence plate number of vehicle

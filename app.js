@@ -22,12 +22,14 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
   try {
     MongoClient.connect(url, (err, client) => {
       const db = client.db('vignette');
-      const usersCollection = db.collection('users');
-      const vehiclesCollection = db.collection('vehicles');
-      const sessionCollection = db.collection('sessions');
-      app.locals.usersCollection = usersCollection;
-      app.locals.vehiclesCollection = vehiclesCollection;
-      app.locals.sessionCollection = sessionCollection;
+            
+      app.locals.usersCollection = db.collection('users');;
+      app.locals.vehiclesCollection = db.collection('vehicles');
+      app.locals.sessionCollection = db.collection('sessions');
+      app.locals.vignetteTypesCollection = db.collection('vignetteTypes');
+      app.locals.vignettesCollection = db.collection('vignettes');
+      app.locals.userVehiclesCollection = db.collection('userVehicles');
+
       const port = process.env.PORT || 10010;
       app.listen(port);
     });

@@ -1,16 +1,19 @@
-const { NotFoundError, ResourceTakenError, AuthenticationError } = require('../helpers/errors');
+const { NotFoundError, AlreadyExistError, AuthenticationError, BadRequestError } = require('../helpers/errors');
 
 module.exports =  function (err, res) {
   if (err instanceof NotFoundError) {
-    handleNotFound(err, res);
+    return handleNotFound(err, res);
   }
-  if (err instanceof ResourceTakenError) {
-    handleResourceTaken(err, res);
+  if (err instanceof AlreadyExistError) {
+    return handleBadRequest(err, res);
   }
   if (err instanceof AuthenticationError) {
-    handleAuthenticationError(err, res);
+    return handleAuthenticationError(err, res);
   }
-  handleOtherErrors(err, res);
+  if (err instanceof BadRequestError) {
+    return handleBadRequest(err, res);
+  }
+  return handleOtherErrors(err, res);
 }
 
 
@@ -18,7 +21,7 @@ function handleOtherErrors(err, res) {
   res.status(500).send(err);
 }
 
-function handleResourceTaken(err, res) {
+function handleBadRequest(err, res) {
   res.status(400).send(err);
 }
 
