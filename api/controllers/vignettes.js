@@ -6,7 +6,8 @@ const randomstring = require('randomstring');
 
 module.exports = {
   purchase: purchase,
-  getMyVignettes: getMyVignettes
+  getMyVignettes: getMyVignettes,
+  deleteExpired: deleteExpired
 }
 
 function purchase(req, res) {
@@ -87,7 +88,7 @@ async function checkIfVignetteIsAvailable(vignetteTypesCollection, vignetteType,
   const availableVignette = await vignetteTypesCollection.findOne({
     "vignetteType": vignetteType, "vehicleType": vehicle.vehicleCategory
   });
-  
+
   if (!availableVignette) {
     throw new BadRequestError("Vignette type not available for this vehicle category")
   }
@@ -124,13 +125,28 @@ async function getVignettes(req, vignetteType, userId) {
     return await vignettesCollection.find({
       "userId": userId.toString(),
       "vignetteType": vignetteType,
-      "validTo": { $gt: today}
+      "validTo": { $gt: today }
     }).toArray();
   }
 
   return await vignettesCollection.find({
     "userId": userId.toString(),
-    "validTo": { $gt: today}
+    "validTo": { $gt: today }
   }).toArray();
-  
+
+}
+
+function deleteExpired(req, res) {
+  return deleteExpiredAsync(req, res);
+}
+
+async function deleteExpiredAsync(req, res) {
+  const vignettesCollection = req.app.locals.vignettesCollection;
+  const now = new Date();
+  try {
+    await vignettesCollection.deleteMany({ "validTo": { $lt: now } });
+    res.status(200).json({});
+  } catch (e) {
+    errorHandlers(e, res);
+  }
 }

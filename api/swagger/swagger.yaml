@@ -192,6 +192,22 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /vignettes/expired:
+    x-swagger-router-controller: vignettes
+    delete:
+      description: Delete all expired vignettes
+      operationId: deleteExpired
+      tags:
+        - vignettes
+      responses:
+        "200":
+          description: Delete successful
+          schema:
+            type: object
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
