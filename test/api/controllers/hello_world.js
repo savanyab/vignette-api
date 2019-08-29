@@ -8,7 +8,7 @@ describe('controllers', function() {
 
     describe('GET /hello', function() {
 
-      it('should return a default string', function(done) {
+      it.skip('should return a default string', function(done) {
 
         request(server)
           .get('/hello')
@@ -24,7 +24,7 @@ describe('controllers', function() {
           });
       });
 
-      it('should accept a name parameter', function(done) {
+      it.skip('should accept a name parameter', function(done) {
 
         request(server)
           .get('/hello')

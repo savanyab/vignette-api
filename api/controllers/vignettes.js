@@ -29,8 +29,8 @@ async function purchaseAsync(req, res) {
   try {
     checkRequestedValidity(requestedValidityFrom);
     const vehicle = await findVehicle(req, vehicleId);
-    await checkForValidVignette(vignettesCollection, vehicleId);
-    await checkIfVignetteIsAvailable(vignetteTypesCollection, vignetteType, vehicle);
+    await checkIfVehicleHasValidVignette(vignettesCollection, vehicleId);
+    await checkIfVignetteIsAvailableForVehicleType(vignetteTypesCollection, vignetteType, vehicle);
 
     const validityStartDate = new Date(requestedValidityFrom);
     const validityEndDate = getValidityEndDate(validityStartDate, vignetteType);
@@ -76,7 +76,7 @@ async function findVehicle(req, vehicleId) {
   return vehicle;
 }
 
-async function checkForValidVignette(vignettesCollection, vehicleId) {
+async function checkIfVehicleHasValidVignette(vignettesCollection, vehicleId) {
   const validVignetteForVehicle = await vignettesCollection.findOne({ "vehicleId": vehicleId });
 
   if (validVignetteForVehicle) {
@@ -84,7 +84,7 @@ async function checkForValidVignette(vignettesCollection, vehicleId) {
   }
 }
 
-async function checkIfVignetteIsAvailable(vignetteTypesCollection, vignetteType, vehicle) {
+async function checkIfVignetteIsAvailableForVehicleType(vignetteTypesCollection, vignetteType, vehicle) {
   const availableVignette = await vignetteTypesCollection.findOne({
     "vignetteType": vignetteType, "vehicleType": vehicle.vehicleCategory
   });

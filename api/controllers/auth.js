@@ -1,7 +1,7 @@
 const randomstring = require('randomstring');
 const errorHandlers = require('../helpers/error-handlers');
 const errors = require('../helpers/errors');
-const { AuthenticationError, ResourceTakenError } = errors;
+const { AuthenticationError, BadRequestError } = errors;
 
 module.exports = {
   login: login,
@@ -20,13 +20,14 @@ async function signupAsync(req, res) {
   try {
     const user = await usersCollection.findOne({ "email": email });
     if (user) {
-      throw new ResourceTakenError('Email already taken');
+      throw new BadRequestError('Email already taken');
     }
     await usersCollection.insert({ "email": email, "password": password });
     const newUser = await usersCollection.findOne({ "email": email });
     res.status(201);
     res.json({ "id": newUser._id, "email": newUser.email }); 
   } catch (e) {
+    console.log(e)
     errorHandlers(e, res);
     
   }

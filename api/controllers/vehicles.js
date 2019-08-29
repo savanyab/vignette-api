@@ -19,7 +19,7 @@ async function saveVehicleAsync(req, res) {
   const userVehiclesCollection = req.app.locals.userVehiclesCollection;
 
   try {
-    const vehicle = await vehiclesCollection.findOneAndUpdate(
+    await vehiclesCollection.findOneAndUpdate(
       { "licencePlate": licencePlate },
       {
         $setOnInsert: { "licencePlate": licencePlate, "vehicleCategory": vehicleCategory },
@@ -29,8 +29,8 @@ async function saveVehicleAsync(req, res) {
         upsert: true
       }
     );
-
-    const vehicleId = vehicle.value._id;
+    const vehicle = await vehiclesCollection.findOne({ "licencePlate": licencePlate });
+    const vehicleId = vehicle._id;
 
     await userVehiclesCollection.findOneAndUpdate(
       {

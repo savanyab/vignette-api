@@ -21,7 +21,7 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
 
   try {
     MongoClient.connect(url, (err, client) => {
-      const db = client.db('vignette');
+      const db = (process.env.NODE_ENV === 'test') ? client.db('test') : client.db('vignette');
             
       app.locals.usersCollection = db.collection('users');;
       app.locals.vehiclesCollection = db.collection('vehicles');
