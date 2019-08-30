@@ -196,7 +196,7 @@ paths:
     x-swagger-router-controller: vignettes
     delete:
       description: Delete all expired vignettes
-      operationId: deleteExpired
+      operationId: deleteExpiredVignettes
       tags:
         - vignettes
       responses:

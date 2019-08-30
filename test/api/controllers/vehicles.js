@@ -34,8 +34,8 @@ describe('vehicles controller', function () {
     });
     await db.collection('userVehicles').insertOne({
       "userId": userId,
-      "vehicleId": 1
-    })
+      "vehicleId": sampleVehicle.ops[0]._id
+    });
     done();
   });
 

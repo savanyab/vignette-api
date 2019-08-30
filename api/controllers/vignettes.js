@@ -7,7 +7,7 @@ const randomstring = require('randomstring');
 module.exports = {
   purchase: purchase,
   getMyVignettes: getMyVignettes,
-  deleteExpired: deleteExpired
+  deleteExpiredVignettes: deleteExpiredVignettes
 }
 
 function purchase(req, res) {
@@ -77,7 +77,12 @@ async function findVehicle(req, vehicleId) {
 }
 
 async function checkIfVehicleHasValidVignette(vignettesCollection, vehicleId) {
-  const validVignetteForVehicle = await vignettesCollection.findOne({ "vehicleId": vehicleId });
+  const today = new Date();
+  const validVignetteForVehicle = await vignettesCollection.findOne({
+    "vehicleId": vehicleId,
+    "validFrom": { $lt: today },
+    "validTo": {$gt: today}
+  });
 
   if (validVignetteForVehicle) {
     throw new AlreadyExistError('There is already a valid vignette for this vehicle');
@@ -136,11 +141,11 @@ async function getVignettes(req, vignetteType, userId) {
 
 }
 
-function deleteExpired(req, res) {
-  return deleteExpiredAsync(req, res);
+function deleteExpiredVignettes(req, res) {
+  return deleteExpiredVignettesAsync(req, res);
 }
 
-async function deleteExpiredAsync(req, res) {
+async function deleteExpiredVignettesAsync(req, res) {
   const vignettesCollection = req.app.locals.vignettesCollection;
   const now = new Date();
   try {
