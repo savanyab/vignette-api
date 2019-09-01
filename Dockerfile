@@ -1,4 +1,4 @@
-FROM node:v10.15.3
+FROM node:latest
 COPY package*.json ./
 RUN npm install
 COPY . .
