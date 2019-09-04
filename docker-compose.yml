@@ -28,6 +28,7 @@ services:
     depends_on: 
       - kong-database
     environment:
+      - KONG_ADMIN_LISTEN=http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=kong-database
       - KONG_PG_PASSWORD=123456789
