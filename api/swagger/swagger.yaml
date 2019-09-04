@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: "0.0.1"
   title: Vignettes API
-host: http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:10010
+host: ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:10010
 basePath: /
 schemes:
   - http
