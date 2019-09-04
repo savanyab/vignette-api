@@ -1,6 +1,6 @@
-FROM node:10
+FROM node:10.15.3
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 COPY . .
 EXPOSE 10010
-CMD [ "swagger", "project", "start" ]
+CMD [ "node app.js" ]
