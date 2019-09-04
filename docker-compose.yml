@@ -10,6 +10,18 @@ services:
     environment:
       POSTGRES_DB: kong
       POSTGRES_USER: kong
+      POSTGRES_PASSWORD: 123456789
+  kong-migration:
+    image: kong:latest
+    command: "kong migrations bootstrap"
+    restart: on-failure
+    environment:
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: 123456789
+    links:
+      - kong-database
+    depends_on:
+      - kong-database
   kong:
     image: kong:latest
     restart: always
@@ -18,6 +30,7 @@ services:
     environment:
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=kong-database
+      - KONG_PG_PASSWORD=123456789
       - KONG_PG_SSL=true
       - KONG_PG_SSL_VERIFY=true  
 
