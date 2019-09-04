@@ -33,7 +33,9 @@ services:
       - KONG_PG_PASSWORD=123456789
       - KONG_PG_SSL=true
       - KONG_PG_SSL_VERIFY=true  
-
+    ports:
+      - 8000:8000
+      - 8001:8001
   vignette-api:
     image: savanyab/vignette-api
     restart: always
