@@ -5,7 +5,7 @@ var app = require('express')();
 module.exports = app;
 const swaggerSecurity = require('./api/helpers/swagger_security.js');
 var MongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost';
+var url = 'mongodb://27017';
 
 var config = {
   appRoot: __dirname, // required config
