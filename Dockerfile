@@ -3,4 +3,4 @@ COPY package*.json ./
 RUN npm install --production
 COPY . .
 EXPOSE 10010
-CMD [ "node app.js" ]
+CMD [ "node", "app.js" ]
