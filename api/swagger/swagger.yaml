@@ -259,6 +259,8 @@ definitions:
       validFrom:
         type: string
         format: date
+        example: "2019-10-01"
+        description: Requested start date for vignette's validity  in YYYY-MM-DD format. Cannot be a past date.
       vignetteType:
         type: string
         enum:
@@ -266,8 +268,10 @@ definitions:
           - monthly
           - yearly
           - county
+        description: Type of vignette that the user wants to purchase
       vehicleId:
         type: string
+        description: Id of vehicle to which the vignette will belong. Purchase is only possible for registered vehicles.
     required:
       - validFrom
       - vignetteType
@@ -288,6 +292,7 @@ definitions:
       licencePlate:
         type: string
         description: Licence plate number of vehicle
+        example: ABC-123
   NewVehicleResponse:
     properties:
       _id:
@@ -298,6 +303,7 @@ definitions:
       licencePlate:
         type: string
         description: Licence plate number of vehicle
+        example: ABC-123
   ErrorResponse:
     required:
       - message

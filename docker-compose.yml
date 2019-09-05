@@ -43,6 +43,6 @@ services:
     links:
       - mongo
       - kong
-    ports:
-      - 10010:10010
+    expose:
+      - 10010
 
