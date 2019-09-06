@@ -45,4 +45,6 @@ services:
       - kong
     expose:
       - 10010
+    ports:
+      - 10010:10010
 
