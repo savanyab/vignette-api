@@ -1,0 +1,43 @@
+Add service:
+curl -i -X POST \
+--url http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/services/ \
+--data 'url=http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:10010'
+
+Add route:
+curl -i -X POST \
+--url http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/routes \
+--data 'name=vignettes' \
+--data 'service.id=da182d2b-6208-469e-b2e1-2c651be199a5' \
+--data 'methods=GET' \
+--data 'methods=POST' \
+--data 'methods=DELETE'
+
+Add key-auth plugin:
+curl -X POST http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/services/da182d2b-6208-469e-b2e1-2c651be199a5/plugins \
+    --data "name=key-auth"
+
+Define mobil consumer:
+curl -i -X POST \
+  --url http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/consumers/ \
+  --data "username=mobil"
+
+Define web consumer:
+curl -i -X POST \
+  --url http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/consumers/ \
+  --data "username=web"
+
+Create key for mobil consumer:
+curl -X POST http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/consumers/mobil/key-auth --data 'key=mobil'
+
+Create key for web consumer:
+curl -X POST http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/consumers/web/key-auth --data 'key=web'
+
+Rate-limiting for route:
+curl -X POST http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/routes/vignettes/plugins \
+    --data "name=rate-limiting"  \
+    --data "config.minute=5"
+
+Rate-limiting for web consumer:
+curl -X POST http://ec2-52-56-61-215.eu-west-2.compute.amazonaws.com:8001/consumers/web/plugins \
+    --data "name=rate-limiting" \
+    --data "config.minute=7"
